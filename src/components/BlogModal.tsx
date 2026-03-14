@@ -43,8 +43,7 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose }) => {
     }
   });
 
-  // Function to render text and replace citations like [1] or [i] with clickable links
-  const renderTextWithCitations = (text: string) => {
+  const renderCitationsOnly = (text: string) => {
     const parts = text.split(/(\[[a-zA-Z0-9]+\])/g);
     return parts.map((part, i) => {
       const match = part.match(/^\[([a-zA-Z0-9]+)\]$/);
@@ -75,6 +74,18 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose }) => {
         }
       }
       return part;
+    });
+  };
+
+  // Function to render text and replace citations like [1] or [i] with clickable links
+  const renderTextWithCitations = (text: string) => {
+    const boldParts = text.split(/(\*\*.*?\*\*)/g);
+    return boldParts.map((boldPart, bIndex) => {
+      if (boldPart.startsWith('**') && boldPart.endsWith('**')) {
+        const innerText = boldPart.slice(2, -2);
+        return <strong key={bIndex} className="font-bold">{renderCitationsOnly(innerText)}</strong>;
+      }
+      return <React.Fragment key={bIndex}>{renderCitationsOnly(boldPart)}</React.Fragment>;
     });
   };
 
@@ -133,13 +144,13 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose }) => {
                   <div className="space-y-6">
                     {section.content.map((paragraph, pIndex) => {
                       // Check if the paragraph is a subheading (e.g., "I. ...", "1. ...", "(i) ...")
-                      const isHeading = /^([IVX]+\.|[0-9]+\.|\([ivx]+\))\s/.test(paragraph);
+                      const isHeading = /^(?:\*\*)?([IVX]+\.|[0-9]+\.|\([ivx]+\))\s/.test(paragraph);
                       return (
                         <p 
                           key={pIndex} 
                           className={`text-lg text-black/80 leading-relaxed text-justify ${isHeading ? 'font-black text-black mt-8 mb-4' : 'font-medium'}`}
                         >
-                          {renderTextWithCitations(paragraph)}
+                          {isHeading ? <strong>{renderTextWithCitations(paragraph)}</strong> : renderTextWithCitations(paragraph)}
                         </p>
                       );
                     })}
