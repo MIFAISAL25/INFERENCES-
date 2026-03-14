@@ -33,6 +33,51 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose }) => {
     });
   };
 
+  // Pre-calculate citation mapping for quick lookup
+  const citationMap = new Map<string, number>();
+  blog.references.forEach((ref, index) => {
+    // Match prefix like "1.", "1", "i", "i.", "iv", etc.
+    const match = ref.match(/^([a-zA-Z0-9]+)[\.\s]/);
+    if (match) {
+      citationMap.set(match[1], index);
+    }
+  });
+
+  // Function to render text and replace citations like [1] or [i] with clickable links
+  const renderTextWithCitations = (text: string) => {
+    const parts = text.split(/(\[[a-zA-Z0-9]+\])/g);
+    return parts.map((part, i) => {
+      const match = part.match(/^\[([a-zA-Z0-9]+)\]$/);
+      if (match) {
+        const citationKey = match[1];
+        const refIndex = citationMap.get(citationKey);
+        if (refIndex !== undefined) {
+          return (
+            <a
+              key={i}
+              href={`#ref-${refIndex}`}
+              onClick={(e) => {
+                e.preventDefault();
+                const element = document.getElementById(`ref-${refIndex}`);
+                if (element) {
+                  element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  element.classList.add('bg-black/10');
+                  setTimeout(() => {
+                    element.classList.remove('bg-black/10');
+                  }, 2000);
+                }
+              }}
+              className="text-blue-600 hover:text-blue-800 hover:underline cursor-pointer font-bold"
+            >
+              {part}
+            </a>
+          );
+        }
+      }
+      return part;
+    });
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <motion.div
@@ -78,7 +123,7 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose }) => {
               <section>
                 <h3 className="text-2xl font-black text-black mb-6">Introduction</h3>
                 <p className="text-lg text-black/80 leading-relaxed font-medium text-justify">
-                  {blog.introduction}
+                  {renderTextWithCitations(blog.introduction)}
                 </p>
               </section>
 
@@ -86,11 +131,18 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose }) => {
                 <section key={index}>
                   <h3 className="text-2xl font-black text-black mb-6">{section.title}</h3>
                   <div className="space-y-6">
-                    {section.content.map((paragraph, pIndex) => (
-                      <p key={pIndex} className="text-lg text-black/80 leading-relaxed font-medium text-justify">
-                        {paragraph}
-                      </p>
-                    ))}
+                    {section.content.map((paragraph, pIndex) => {
+                      // Check if the paragraph is a subheading (e.g., "I. ...", "1. ...", "(i) ...")
+                      const isHeading = /^([IVX]+\.|[0-9]+\.|\([ivx]+\))\s/.test(paragraph);
+                      return (
+                        <p 
+                          key={pIndex} 
+                          className={`text-lg text-black/80 leading-relaxed text-justify ${isHeading ? 'font-black text-black mt-8 mb-4' : 'font-medium'}`}
+                        >
+                          {renderTextWithCitations(paragraph)}
+                        </p>
+                      );
+                    })}
                   </div>
                 </section>
               ))}
@@ -98,7 +150,7 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose }) => {
               <section>
                 <h3 className="text-2xl font-black text-black mb-6">Conclusion</h3>
                 <p className="text-lg text-black/80 leading-relaxed font-medium text-justify">
-                  {blog.conclusion}
+                  {renderTextWithCitations(blog.conclusion)}
                 </p>
               </section>
 
@@ -108,7 +160,11 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose }) => {
                 </h3>
                 <ul className="list-none space-y-4">
                   {blog.references.map((reference, index) => (
-                    <li key={index} className="text-sm font-medium text-black/70 text-justify">
+                    <li 
+                      key={index} 
+                      id={`ref-${index}`}
+                      className="text-sm font-medium text-black/70 text-justify p-2 -mx-2 rounded transition-colors duration-500"
+                    >
                       {renderCitation(reference)}
                     </li>
                   ))}
