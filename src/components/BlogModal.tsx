@@ -134,9 +134,13 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose }) => {
 
               <section>
                 <h3 className="font-headline text-[32px] text-on-surface mb-6 font-bold tracking-tight">Introduction</h3>
-                <p className="font-sans text-[18px] leading-[1.8] text-on-surface-variant text-justify">
-                  {renderTextWithCitations(blog.introduction)}
-                </p>
+                <div className="space-y-6">
+                  {blog.introduction.split('\n\n').map((paragraph, idx) => (
+                    <p key={idx} className="font-sans text-[18px] leading-[1.8] text-on-surface-variant text-justify">
+                      {renderTextWithCitations(paragraph)}
+                    </p>
+                  ))}
+                </div>
               </section>
 
               {blog.sections.map((section, index) => (
@@ -144,13 +148,17 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose }) => {
                   <h3 className="font-headline text-[32px] text-on-surface mb-6 font-bold tracking-tight">{section.title}</h3>
                   <div className="space-y-6">
                     {section.content.map((paragraph, pIndex) => {
-                      const isHeading = /^(?:\*\*)?([IVX]+\.|[0-9]+\.|\([ivx]+\))\s/.test(paragraph);
+                      if (!paragraph.trim()) {
+                        return <div key={pIndex} className="h-4" />;
+                      }
+                      
+                      const isHeading = paragraph.startsWith('**') && paragraph.length < 100;
                       return (
                         <p 
                           key={pIndex} 
                           className={`font-sans text-[18px] leading-[1.8] text-justify ${isHeading ? 'text-on-surface font-semibold mt-10 mb-4 text-[22px]' : 'text-on-surface-variant'}`}
                         >
-                          {isHeading ? <strong>{renderTextWithCitations(paragraph)}</strong> : renderTextWithCitations(paragraph)}
+                          {renderTextWithCitations(paragraph)}
                         </p>
                       );
                     })}
@@ -160,9 +168,13 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose }) => {
 
               <section>
                 <h3 className="font-headline text-[32px] text-on-surface mb-6 font-bold tracking-tight">Conclusion</h3>
-                <p className="font-sans text-[18px] leading-[1.8] text-on-surface-variant text-justify">
-                  {renderTextWithCitations(blog.conclusion)}
-                </p>
+                <div className="space-y-6">
+                  {blog.conclusion.split('\n\n').map((paragraph, idx) => (
+                    <p key={idx} className="font-sans text-[18px] leading-[1.8] text-on-surface-variant text-justify">
+                      {renderTextWithCitations(paragraph)}
+                    </p>
+                  ))}
+                </div>
               </section>
 
               <section className="pt-12 mt-16 border-t border-outline-variant/30">
