@@ -1,5 +1,6 @@
 export interface BlogPost {
   id: string;
+  category: string;
   title: string;
   date: string;
   abstract: string;

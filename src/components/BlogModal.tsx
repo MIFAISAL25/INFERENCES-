@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { X, Calendar, BookOpen, Quote } from 'lucide-react';
+import { X } from 'lucide-react';
 import { BlogPost } from '../types';
 
 interface BlogModalProps {
@@ -23,7 +23,7 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose }) => {
             href={href} 
             target="_blank" 
             rel="noopener noreferrer"
-            className="text-blue-600 underline hover:text-blue-800 break-all"
+            className="text-secondary underline hover:text-primary break-all transition-colors"
           >
             {part}
           </a>
@@ -60,15 +60,15 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose }) => {
                 const element = document.getElementById(`ref-${refIndex}`);
                 if (element) {
                   element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                  element.classList.add('bg-black/10');
+                  element.classList.add('bg-outline-variant/30');
                   setTimeout(() => {
-                    element.classList.remove('bg-black/10');
+                    element.classList.remove('bg-outline-variant/30');
                   }, 2000);
                 }
               }}
-              className="text-blue-600 hover:text-blue-800 hover:underline cursor-pointer font-bold"
+              className="text-[11px] font-sans font-bold text-primary hover:text-white hover:bg-primary bg-primary/10 px-1 py-[2px] rounded align-super ml-0.5 cursor-pointer transition-colors leading-none"
             >
-              {part}
+              [{citationKey}]
             </a>
           );
         }
@@ -83,7 +83,7 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose }) => {
     return boldParts.map((boldPart, bIndex) => {
       if (boldPart.startsWith('**') && boldPart.endsWith('**')) {
         const innerText = boldPart.slice(2, -2);
-        return <strong key={bIndex} className="font-bold">{renderCitationsOnly(innerText)}</strong>;
+        return <strong key={bIndex} className="font-semibold text-on-surface">{renderCitationsOnly(innerText)}</strong>;
       }
       return <React.Fragment key={bIndex}>{renderCitationsOnly(boldPart)}</React.Fragment>;
     });
@@ -96,59 +96,59 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose }) => {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
-        className="absolute inset-0 bg-white/90 backdrop-blur-md"
+        className="absolute inset-0 bg-background/90 backdrop-blur-sm"
       />
       <motion.div
         layoutId={`card-${blog.id}`}
-        className="relative w-full h-full bg-[#FDFBF7] border-2 border-black shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] flex flex-col overflow-hidden rounded-none"
+        className="relative w-full h-full bg-background flex flex-col overflow-hidden"
       >
-        <button
-          onClick={onClose}
-          className="absolute top-6 right-6 z-50 p-2 bg-black text-white border-2 border-black hover:bg-white hover:text-black transition-colors shadow-[4px_4px_0px_0px_#ffffff] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]"
-        >
-          <X className="w-6 h-6" />
-        </button>
+        <div className="sticky top-0 w-full bg-background/80 backdrop-blur-md border-b border-outline-variant/30 z-10 flex justify-end px-8 py-4">
+            <button
+            onClick={onClose}
+            className="p-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-full transition-colors flex items-center gap-2 font-sans text-sm"
+            >
+            Close <X className="w-5 h-5" />
+            </button>
+        </div>
 
-        <div className="overflow-y-auto custom-scrollbar h-full">
-          <div className="p-8 sm:p-16 max-w-5xl mx-auto">
-            <div className="mb-12 border-b-2 border-black pb-12">
-              <div className="flex items-center gap-2 text-sm font-black uppercase tracking-widest text-black/40 mb-6">
-                <Calendar className="w-4 h-4" />
+        <div className="overflow-y-auto custom-scrollbar h-full flex-1">
+          <article className="py-[5rem] px-8 max-w-[720px] mx-auto">
+            <header className="mb-12 border-b border-outline-variant/30 pb-8">
+              <span className="font-sans text-[12px] uppercase font-bold text-primary tracking-[0.1em] block mb-6">
                 {blog.date}
-              </div>
-              <h2 className="text-4xl sm:text-6xl font-black text-black leading-[0.95] mb-8">
+              </span>
+              <h1 className="font-headline text-[48px] leading-[1.1] font-bold text-on-surface tracking-tight">
                 {blog.title}
-              </h2>
-            </div>
+              </h1>
+            </header>
 
-            <div className="space-y-16">
-              <section>
-                <h3 className="text-xl font-black uppercase tracking-widest text-black mb-6 flex items-center gap-2">
-                  <BookOpen className="w-5 h-5" /> Abstract
+            <div className="space-y-14">
+              <section className="my-10 pl-6 border-l-4 border-primary bg-surface-container-low py-8 px-8 rounded-r-2xl shadow-sm">
+                <h3 className="font-sans text-[12px] uppercase font-bold text-primary tracking-[0.1em] mb-4">
+                  Abstract
                 </h3>
-                <p className="text-xl font-medium text-black/70 leading-relaxed italic pl-6 border-l-4 border-black text-justify">
-                  {blog.abstract}
-                </p>
+                <blockquote className="font-headline text-[24px] leading-relaxed italic text-on-surface text-justify">
+                  "{blog.abstract}"
+                </blockquote>
               </section>
 
               <section>
-                <h3 className="text-2xl font-black text-black mb-6">Introduction</h3>
-                <p className="text-lg text-black/80 leading-relaxed font-medium text-justify">
+                <h3 className="font-headline text-[32px] text-on-surface mb-6 font-bold tracking-tight">Introduction</h3>
+                <p className="font-sans text-[18px] leading-[1.8] text-on-surface-variant text-justify">
                   {renderTextWithCitations(blog.introduction)}
                 </p>
               </section>
 
               {blog.sections.map((section, index) => (
                 <section key={index}>
-                  <h3 className="text-2xl font-black text-black mb-6">{section.title}</h3>
+                  <h3 className="font-headline text-[32px] text-on-surface mb-6 font-bold tracking-tight">{section.title}</h3>
                   <div className="space-y-6">
                     {section.content.map((paragraph, pIndex) => {
-                      // Check if the paragraph is a subheading (e.g., "I. ...", "1. ...", "(i) ...")
                       const isHeading = /^(?:\*\*)?([IVX]+\.|[0-9]+\.|\([ivx]+\))\s/.test(paragraph);
                       return (
                         <p 
                           key={pIndex} 
-                          className={`text-lg text-black/80 leading-relaxed text-justify ${isHeading ? 'font-black text-black mt-8 mb-4' : 'font-medium'}`}
+                          className={`font-sans text-[18px] leading-[1.8] text-justify ${isHeading ? 'text-on-surface font-semibold mt-10 mb-4 text-[22px]' : 'text-on-surface-variant'}`}
                         >
                           {isHeading ? <strong>{renderTextWithCitations(paragraph)}</strong> : renderTextWithCitations(paragraph)}
                         </p>
@@ -159,22 +159,22 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose }) => {
               ))}
 
               <section>
-                <h3 className="text-2xl font-black text-black mb-6">Conclusion</h3>
-                <p className="text-lg text-black/80 leading-relaxed font-medium text-justify">
+                <h3 className="font-headline text-[32px] text-on-surface mb-6 font-bold tracking-tight">Conclusion</h3>
+                <p className="font-sans text-[18px] leading-[1.8] text-on-surface-variant text-justify">
                   {renderTextWithCitations(blog.conclusion)}
                 </p>
               </section>
 
-              <section className="bg-black/5 p-8 sm:p-12 mt-12 border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-                <h3 className="text-xl font-black uppercase tracking-widest text-black mb-8 flex items-center gap-2">
-                  <Quote className="w-5 h-5" /> References
+              <section className="pt-12 mt-16 border-t border-outline-variant/30">
+                <h3 className="font-sans text-[12px] uppercase font-bold text-primary tracking-[0.1em] mb-8">
+                  References & Citations
                 </h3>
-                <ul className="list-none space-y-4">
+                <ul className="list-none space-y-3">
                   {blog.references.map((reference, index) => (
                     <li 
                       key={index} 
                       id={`ref-${index}`}
-                      className="text-sm font-medium text-black/70 text-justify p-2 -mx-2 rounded transition-colors duration-500"
+                      className="font-sans text-[14px] leading-relaxed text-on-surface-variant p-4 rounded-xl bg-surface-container-low border border-outline-variant/20 hover:border-outline-variant/40 transition-colors duration-500 shadow-sm"
                     >
                       {renderCitation(reference)}
                     </li>
@@ -182,7 +182,7 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose }) => {
                 </ul>
               </section>
             </div>
-          </div>
+          </article>
         </div>
       </motion.div>
     </div>

@@ -1,18 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-newsreader: "Newsreader", ui-serif, serif;
+  --font-inter: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-newsreader);
+
+  --color-background: var(--color-background-val);
+  --color-on-background: var(--color-on-background-val);
+  --color-surface-container-low: var(--color-surface-container-low-val);
+  --color-outline-variant: var(--color-outline-variant-val);
+  --color-on-surface: var(--color-on-surface-val);
+  --color-on-surface-variant: var(--color-on-surface-variant-val);
+  --color-primary: var(--color-primary-val);
+  --color-on-primary: var(--color-on-primary-val);
+  --color-secondary: var(--color-secondary-val);
+  --color-tertiary-container: var(--color-tertiary-container-val);
+  --color-on-primary-container: var(--color-on-primary-container-val);
+  --color-surface-bright: var(--color-surface-bright-val);
+  --color-secondary-container: var(--color-secondary-container-val);
+
+  --spacing-section-gap: 5rem;
+  --spacing-reading-width: 720px;
 }
 
 :root {
-  --bg-creme: #FDFBF7;
-  --text-black: #0a0a0a;
+  --color-background-val: #F4F1E9;
+  --color-on-background-val: #2E2B26;
+  --color-surface-container-low-val: #EBE6DC;
+  --color-outline-variant-val: #D9D2C4;
+  --color-on-surface-val: #2E2B26;
+  --color-on-surface-variant-val: #696357;
+  --color-primary-val: #B6562B;
+  --color-on-primary-val: #FFFFFF;
+  --color-secondary-val: #B6562B;
+  --color-tertiary-container-val: #DACDBC;
+  --color-on-primary-container-val: #FFFFFF;
+  --color-surface-bright-val: #FDFBF7;
+  --color-secondary-container-val: #F4F1E9;
+}
+
+.dark {
+  --color-background-val: #1E1C1A;
+  --color-on-background-val: #EBE6DC;
+  --color-surface-container-low-val: #2A2724;
+  --color-outline-variant-val: #48433D;
+  --color-on-surface-val: #EBE6DC;
+  --color-on-surface-variant-val: #B0A99E;
+  --color-primary-val: #CF7E58;
+  --color-on-primary-val: #1E1C1A;
+  --color-secondary-val: #CF7E58;
+  --color-tertiary-container-val: #423D37;
+  --color-on-primary-container-val: #1E1C1A;
+  --color-surface-bright-val: #171513;
+  --color-secondary-container-val: #24211E;
 }
 
 body {
-  background-color: var(--bg-creme);
-  color: var(--text-black);
+  background-color: var(--color-background);
+  color: var(--color-on-background);
+  font-family: var(--font-inter);
+}
+
+.font-headline {
+  font-family: var(--font-newsreader);
 }
 
 /* Custom Scrollbar */
